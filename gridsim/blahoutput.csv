@@ -1,0 +1,4 @@
+JobName,SubmitTime,StartTime,FinishTime,SLR,CriticalPathTime,TotalCPUTicks,Stretch,Speedup,
+j1,0,0,45,1.0,45,180,0.25,4.0
+j2,0,0,47,1.23684210526,38,100,0.47,2.12765957447
+j3,0,0,67,1.34,50,440,0.152272727273,6.5671641791

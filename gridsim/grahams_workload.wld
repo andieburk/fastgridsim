@@ -1,0 +1,18 @@
+#graham's workload
+
+Job Job1 0 /fair/none
+Task t1 1 2 Kind1   
+Task t9 1 9 Kind1 t1 
+
+Job Job2 0 /fair/none
+Task t2 1 2 Kind1  
+
+Job Job3 0 /fair/none
+Task t3 1 2 Kind1  
+
+Job Job4 0 /fair/none
+Task t4 1 2 Kind1  
+Task t5 1 4 Kind1 t4
+Task t6 1 4 Kind1 t4
+Task t7 1 4 Kind1 t4 
+Task t8 1 4 Kind1 t4 

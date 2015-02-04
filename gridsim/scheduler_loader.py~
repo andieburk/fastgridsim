@@ -1,0 +1,26 @@
+#scheduler initialiser.py
+
+
+from fairshare_scheduler import *
+from schedulers import *
+
+class scheduler_loader(object):
+	def name_to_orderer(self, orderer_name):
+		if orderer_name == "fifo_job":
+			return fifo_job_orderer()		
+		
+		elif orderer_name == "fifo_task" or "name_to_orderer" == "identity":
+			return identity_orderer()
+		
+		elif orderer_name == "fair_share":
+			return FairshareScheduler()
+		
+	def name_to_allocator(self, allocator_name):
+		if allocator_name == "first_fit":
+			return first_fit_allocator()
+		elif allocator_name == "random":
+			return random_allocator()
+		else
+			print "error - invalid allocator name: ", allocator_name
+			exit()
+	

@@ -1,0 +1,458 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		A138AD4315090BC60060DF60 /* workload_generator_2.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = workload_generator_2.py; sourceTree = "<group>"; };
+		A138AD4415090C770060DF60 /* wld_generator_runner.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = wld_generator_runner.py; sourceTree = "<group>"; };
+		A13EF07014F565250038F4F2 /* interpret_real_to_sched.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = interpret_real_to_sched.py; sourceTree = "<group>"; };
+		A13EF07214F568410038F4F2 /* compare_two_schedules.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = compare_two_schedules.py; sourceTree = "<group>"; };
+		A149B256151249F80012B808 /* workload5.wld */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload5.wld; sourceTree = "<group>"; };
+		A16173EA1510FA8E00395709 /* platform_generator_1.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = platform_generator_1.py; sourceTree = "<group>"; };
+		A16BC5A114FBDDEE00E69E7B /* start_correls.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = start_correls.py; sourceTree = "<group>"; };
+		A179F8A914BF284D00B17CA0 /* analysis.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = analysis.py; sourceTree = "<group>"; };
+		A179F8AA14BF284D00B17CA0 /* app_man.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = app_man.py; sourceTree = "<group>"; };
+		A179F8AC14BF284D00B17CA0 /* example_simulation_parameters1.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = example_simulation_parameters1.py; sourceTree = "<group>"; };
+		A179F8AD14BF284D00B17CA0 /* fairshare_scheduler.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = fairshare_scheduler.py; sourceTree = "<group>"; };
+		A179F8AF14BF284D00B17CA0 /* fairsharenotsure.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fairsharenotsure.png; sourceTree = "<group>"; };
+		A179F8B014BF284D00B17CA0 /* fairshares1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fairshares1.txt; sourceTree = "<group>"; };
+		A179F8B114BF284D00B17CA0 /* fairshares2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fairshares2.txt; sourceTree = "<group>"; };
+		A179F8B214BF284D00B17CA0 /* fairsharetestworkload.wld */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fairsharetestworkload.wld; sourceTree = "<group>"; };
+		A179F8B314BF284D00B17CA0 /* fifo job.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fifo job.png"; sourceTree = "<group>"; };
+		A179F8B414BF284D00B17CA0 /* fifo task.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fifo task.png"; sourceTree = "<group>"; };
+		A179F8B514BF284D00B17CA0 /* grahams_platform.plat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = grahams_platform.plat; sourceTree = "<group>"; };
+		A179F8B614BF284D00B17CA0 /* grahams_workload.wld */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = grahams_workload.wld; sourceTree = "<group>"; };
+		A179F8B714BF284D00B17CA0 /* gridsim.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = gridsim.py; sourceTree = "<group>"; };
+		A179F8B814BF284D00B17CA0 /* gstest.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = gstest.py; sourceTree = "<group>"; };
+		A179F8B914BF284D00B17CA0 /* helpers.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = helpers.py; sourceTree = "<group>"; };
+		A179F8BB14BF284D00B17CA0 /* import_manager.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = import_manager.py; sourceTree = "<group>"; };
+		A179F8BE14BF284D00B17CA0 /* many_sim_params.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = many_sim_params.py; sourceTree = "<group>"; };
+		A179F8BF14BF284D00B17CA0 /* many_workloads_generation.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = many_workloads_generation.py; sourceTree = "<group>"; };
+		A179F8C014BF284D00B17CA0 /* member_test.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = member_test.py; sourceTree = "<group>"; };
+		A179F8C114BF284D00B17CA0 /* metrics.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = metrics.py; sourceTree = "<group>"; };
+		A179F8C314BF284D00B17CA0 /* oneworkload.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = oneworkload.sh; sourceTree = "<group>"; };
+		A179F8C414BF284D00B17CA0 /* parameter_loader.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = parameter_loader.py; sourceTree = "<group>"; };
+		A179F8C614BF284D00B17CA0 /* platform1.plat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform1.plat; sourceTree = "<group>"; };
+		A179F8C714BF284D00B17CA0 /* platform2.plat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform2.plat; sourceTree = "<group>"; };
+		A179F8C814BF284D00B17CA0 /* platform_manager.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = platform_manager.py; sourceTree = "<group>"; };
+		A179F8CA14BF284D00B17CA0 /* pool_runner.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = pool_runner.py; sourceTree = "<group>"; };
+		A179F8CC14BF284D00B17CA0 /* prunner_test.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = prunner_test.py; sourceTree = "<group>"; };
+		A179F8CD14BF284D00B17CA0 /* req_man.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = req_man.py; sourceTree = "<group>"; };
+		A179F8CF14BF284D00B17CA0 /* resource_man.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = resource_man.py; sourceTree = "<group>"; };
+		A179F8D214BF284D00B17CA0 /* run_from_params_files.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = run_from_params_files.py; sourceTree = "<group>"; };
+		A179F8D314BF284D00B17CA0 /* runner.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = runner.py; sourceTree = "<group>"; };
+		A179F8D414BF284D00B17CA0 /* schedule_visualisation.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = schedule_visualisation.py; sourceTree = "<group>"; };
+		A179F8D614BF284D00B17CA0 /* scheduler_loader.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = scheduler_loader.py; sourceTree = "<group>"; };
+		A179F8D714BF284D00B17CA0 /* schedulers.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = schedulers.py; sourceTree = "<group>"; };
+		A179F8D914BF284D00B17CA0 /* simplest_sim.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = simplest_sim.py; sourceTree = "<group>"; };
+		A179F8DA14BF284D00B17CA0 /* simulation_parameters_class.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = simulation_parameters_class.py; sourceTree = "<group>"; };
+		A179F8DB14BF284D00B17CA0 /* smnew.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = smnew.py; sourceTree = "<group>"; };
+		A179F8DC14BF284D00B17CA0 /* testimport.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = testimport.py; sourceTree = "<group>"; };
+		A179F8DD14BF284D00B17CA0 /* twoworkload.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twoworkload.txt; sourceTree = "<group>"; };
+		A179F8DE14BF284D00B17CA0 /* workload1.wld */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload1.wld; sourceTree = "<group>"; };
+		A179F8DF14BF284D00B17CA0 /* workload2.wld */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload2.wld; sourceTree = "<group>"; };
+		A179F8E014BF284D00B17CA0 /* workload_generator.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = workload_generator.py; sourceTree = "<group>"; };
+		A18571A6150780A10087F837 /* workload4.wld */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload4.wld; sourceTree = "<group>"; };
+		A18571A8150781010087F837 /* platform1core.plat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform1core.plat; sourceTree = "<group>"; };
+		A187DA0915010B370071C7F9 /* workload3.wld */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload3.wld; sourceTree = "<group>"; };
+		A1B3355A14F7998D00BF920F /* peak_cores_from_workload_rec.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = peak_cores_from_workload_rec.py; sourceTree = "<group>"; };
+		A1B3AB8615322A5F00F2B302 /* network_delay_manager.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = network_delay_manager.py; sourceTree = "<group>"; };
+		A1B3AB881532D29800F2B302 /* workload6.wld */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload6.wld; sourceTree = "<group>"; };
+		A1BD4111154C5008009F7C28 /* task_state_new.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = task_state_new.py; sourceTree = "<group>"; };
+		A1BFC98B14D9996000B716E9 /* data_man.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = data_man.py; sourceTree = "<group>"; };
+		A1C1C3C714E9554500CE51FF /* workload_with_cores.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload_with_cores.txt; sourceTree = "<group>"; };
+		A1D4B787151381F100065030 /* platform100cores.plat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform100cores.plat; sourceTree = "<group>"; };
+		A1D4B7891513823700065030 /* platform1000cores.plat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform1000cores.plat; sourceTree = "<group>"; };
+		A1EDBB56151A160F00C82412 /* generate_params_for_sweep.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = generate_params_for_sweep.py; sourceTree = "<group>"; };
+		A1EE96D7154D63EA00823CDC /* run_from_params_files_em.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = run_from_params_files_em.py; sourceTree = "<group>"; };
+		E90F52C51591F9BD00D40E85 /* my_format_to_hash_format.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = my_format_to_hash_format.py; sourceTree = "<group>"; };
+		E91273AA1593275D0014ECBE /* xgrid_runner.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = xgrid_runner.py; sourceTree = "<group>"; };
+		E91635D41794091A00D81D45 /* platform_real2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform_real2.txt; sourceTree = "<group>"; };
+		E9362EDB1599F2150001DE9F /* asrc_example_simulation_parameters.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = asrc_example_simulation_parameters.py; sourceTree = "<group>"; };
+		E9362EDD1599F7840001DE9F /* generate_params_for_sweep_asrc.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = generate_params_for_sweep_asrc.py; sourceTree = "<group>"; };
+		E9450C78160A59E500CFA6DE /* GiniCoef.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = GiniCoef.py; sourceTree = "<group>"; };
+		E9493FE917749DCF00FDC5FD /* workload9_10s.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload9_10s.txt; sourceTree = "<group>"; };
+		E95AAB5E16E9F96C00F25CA3 /* workload8simple */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload8simple; sourceTree = "<group>"; };
+		E95AAB5F16E9FA8500F25CA3 /* basic_curves.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = basic_curves.txt; sourceTree = "<group>"; };
+		E95AAB6016E9FB0600F25CA3 /* platform_simple.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform_simple.txt; sourceTree = "<group>"; };
+		E95D1CB517FDD68F006C3556 /* thesis_analysis.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = thesis_analysis.py; sourceTree = "<group>"; };
+		E95F068516DFAABB0046C4DA /* value_curve_generation.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = value_curve_generation.py; sourceTree = "<group>"; };
+		E96692F8179174C7004F568B /* asrc_sub.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = asrc_sub.py; sourceTree = "<group>"; };
+		E96C1CB316CE5D5A000EF975 /* workload7withvalueonekind.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload7withvalueonekind.txt; sourceTree = "<group>"; };
+		E96C5CA015A7408E00E3E5F0 /* unique_lines.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = unique_lines.py; sourceTree = "<group>"; };
+		E98356D51665333C00579D91 /* pickled_inspector.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = pickled_inspector.py; sourceTree = "<group>"; };
+		E98356D71665406300579D91 /* ptplay.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ptplay.py; sourceTree = "<group>"; };
+		E98685621655313600902DBF /* extract_results.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = extract_results.py; sourceTree = "<group>"; };
+		E987CC2F178FFEC800AB4EB5 /* utilities.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = utilities.py; sourceTree = "<group>"; };
+		E990BEDD16C959BB00FDF0BC /* workload7withvalue */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = workload7withvalue; sourceTree = "<group>"; };
+		E990BEDE16C959E800FDF0BC /* value_calculations.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = value_calculations.py; sourceTree = "<group>"; };
+		E990BEDF16C95A0B00FDF0BC /* value_curves.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = value_curves.txt; sourceTree = "<group>"; };
+		E993772F171EB02000C2C405 /* workload_generator_3.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = workload_generator_3.py; sourceTree = "<group>"; };
+		E9C1FB5B187DB429000CAAED /* quickwork.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = quickwork.py; sourceTree = "<group>"; };
+		E9CBE8C1160B75C3004F8E48 /* permutes.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = permutes.py; sourceTree = "<group>"; };
+		E9D4E13B173CF85E00B46F18 /* timeout_manager.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = timeout_manager.py; sourceTree = "<group>"; };
+		E9D4E13C173D5CC400B46F18 /* simulation_exceptions.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = simulation_exceptions.py; sourceTree = "<group>"; };
+		E9D870A8160CB7E5007135B7 /* example_sweep_params.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = example_sweep_params.py; sourceTree = "<group>"; };
+		E9D870AA160CB8C6007135B7 /* generate_sweep_new.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = generate_sweep_new.py; sourceTree = "<group>"; };
+		E9EE2FAE161B0DE1006A415A /* anonymise_fairshare_tree.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = anonymise_fairshare_tree.py; sourceTree = "<group>"; };
+		E9EE2FB0161B0DF9006A415A /* anonymise_job_file.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = anonymise_job_file.py; sourceTree = "<group>"; };
+		E9EE2FB1161B0DF9006A415A /* extract_fairshare_tree.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = extract_fairshare_tree.py; sourceTree = "<group>"; };
+		E9EE2FB2161B5385006A415A /* new_workload_from_logs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = new_workload_from_logs.py; sourceTree = "<group>"; };
+		E9EE2FB3161B5800006A415A /* text_log_to_pytable.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = text_log_to_pytable.py; sourceTree = "<group>"; };
+		E9F4656D1715F40200B796B7 /* inter_arrivals.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = inter_arrivals.py; sourceTree = "<group>"; };
+		E9FCF79C17A7DF6B007529FF /* blob.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = blob.py; sourceTree = "<group>"; };
+		E9FCFE661741404100EE292F /* workload_loader.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = workload_loader.py; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		A179F89B14BF27C900B17CA0 = {
+			isa = PBXGroup;
+			children = (
+				A179F8A814BF284D00B17CA0 /* gridsim */,
+			);
+			sourceTree = "<group>";
+		};
+		A179F8A814BF284D00B17CA0 /* gridsim */ = {
+			isa = PBXGroup;
+			children = (
+				A179F8E114BF287C00B17CA0 /* Simulator */,
+				A179F8E414BF28AC00B17CA0 /* Workload Generation */,
+				A179F8E614BF28CC00B17CA0 /* Inputs */,
+				A179F8E914BF298A00B17CA0 /* outputs */,
+				A179F8E514BF28BD00B17CA0 /* Postprocessing */,
+				A179F8E714BF28DF00B17CA0 /* Runners */,
+				A179F8E814BF295600B17CA0 /* testing */,
+				A179F8EA14BF29B600B17CA0 /* play */,
+				A1B3AB8715322A8100F2B302 /* Deprecated_bits */,
+			);
+			path = gridsim;
+			sourceTree = "<group>";
+		};
+		A179F8E114BF287C00B17CA0 /* Simulator */ = {
+			isa = PBXGroup;
+			children = (
+				A179F8B714BF284D00B17CA0 /* gridsim.py */,
+				A179F8EB14BF2D1900B17CA0 /* Core */,
+				A179F8EC14BF2D2A00B17CA0 /* Auxiliaries */,
+				A179F8E314BF28A000B17CA0 /* Schedulers */,
+			);
+			name = Simulator;
+			sourceTree = "<group>";
+		};
+		A179F8E314BF28A000B17CA0 /* Schedulers */ = {
+			isa = PBXGroup;
+			children = (
+				A179F8AD14BF284D00B17CA0 /* fairshare_scheduler.py */,
+				A179F8D714BF284D00B17CA0 /* schedulers.py */,
+			);
+			name = Schedulers;
+			sourceTree = "<group>";
+		};
+		A179F8E414BF28AC00B17CA0 /* Workload Generation */ = {
+			isa = PBXGroup;
+			children = (
+				E9EE2FB3161B5800006A415A /* text_log_to_pytable.py */,
+				E9EE2FAE161B0DE1006A415A /* anonymise_fairshare_tree.py */,
+				E9EE2FB0161B0DF9006A415A /* anonymise_job_file.py */,
+				E9EE2FB1161B0DF9006A415A /* extract_fairshare_tree.py */,
+				E9EE2FB2161B5385006A415A /* new_workload_from_logs.py */,
+				A16173EA1510FA8E00395709 /* platform_generator_1.py */,
+				A179F8E014BF284D00B17CA0 /* workload_generator.py */,
+				A138AD4315090BC60060DF60 /* workload_generator_2.py */,
+				E993772F171EB02000C2C405 /* workload_generator_3.py */,
+				E9FCF79C17A7DF6B007529FF /* blob.py */,
+				E95F068516DFAABB0046C4DA /* value_curve_generation.py */,
+				E90F52C51591F9BD00D40E85 /* my_format_to_hash_format.py */,
+				A138AD4415090C770060DF60 /* wld_generator_runner.py */,
+			);
+			name = "Workload Generation";
+			sourceTree = "<group>";
+		};
+		A179F8E514BF28BD00B17CA0 /* Postprocessing */ = {
+			isa = PBXGroup;
+			children = (
+				E9450C78160A59E500CFA6DE /* GiniCoef.py */,
+				E987CC2F178FFEC800AB4EB5 /* utilities.py */,
+				A13EF07214F568410038F4F2 /* compare_two_schedules.py */,
+				A179F8D414BF284D00B17CA0 /* schedule_visualisation.py */,
+				A179F8A914BF284D00B17CA0 /* analysis.py */,
+				E95D1CB517FDD68F006C3556 /* thesis_analysis.py */,
+				E9C1FB5B187DB429000CAAED /* quickwork.py */,
+				E98685621655313600902DBF /* extract_results.py */,
+				E98356D71665406300579D91 /* ptplay.py */,
+				E98356D51665333C00579D91 /* pickled_inspector.py */,
+				A16BC5A114FBDDEE00E69E7B /* start_correls.py */,
+			);
+			name = Postprocessing;
+			sourceTree = "<group>";
+		};
+		A179F8E614BF28CC00B17CA0 /* Inputs */ = {
+			isa = PBXGroup;
+			children = (
+				A179F8DE14BF284D00B17CA0 /* workload1.wld */,
+				A179F8DF14BF284D00B17CA0 /* workload2.wld */,
+				A187DA0915010B370071C7F9 /* workload3.wld */,
+				A149B256151249F80012B808 /* workload5.wld */,
+				A1B3AB881532D29800F2B302 /* workload6.wld */,
+				E990BEDD16C959BB00FDF0BC /* workload7withvalue */,
+				E96C1CB316CE5D5A000EF975 /* workload7withvalueonekind.txt */,
+				E95AAB5E16E9F96C00F25CA3 /* workload8simple */,
+				E9493FE917749DCF00FDC5FD /* workload9_10s.txt */,
+				E990BEDF16C95A0B00FDF0BC /* value_curves.txt */,
+				E95AAB5F16E9FA8500F25CA3 /* basic_curves.txt */,
+				A18571A6150780A10087F837 /* workload4.wld */,
+				A1C1C3C714E9554500CE51FF /* workload_with_cores.txt */,
+				A179F8DD14BF284D00B17CA0 /* twoworkload.txt */,
+				A179F8DA14BF284D00B17CA0 /* simulation_parameters_class.py */,
+				A179F8C614BF284D00B17CA0 /* platform1.plat */,
+				A179F8C714BF284D00B17CA0 /* platform2.plat */,
+				E95AAB6016E9FB0600F25CA3 /* platform_simple.txt */,
+				A1D4B787151381F100065030 /* platform100cores.plat */,
+				A1D4B7891513823700065030 /* platform1000cores.plat */,
+				E91635D41794091A00D81D45 /* platform_real2.txt */,
+				A18571A8150781010087F837 /* platform1core.plat */,
+				A179F8BE14BF284D00B17CA0 /* many_sim_params.py */,
+				A179F8B514BF284D00B17CA0 /* grahams_platform.plat */,
+				A179F8B614BF284D00B17CA0 /* grahams_workload.wld */,
+				A179F8B214BF284D00B17CA0 /* fairsharetestworkload.wld */,
+				A179F8B014BF284D00B17CA0 /* fairshares1.txt */,
+				A179F8B114BF284D00B17CA0 /* fairshares2.txt */,
+				A179F8AC14BF284D00B17CA0 /* example_simulation_parameters1.py */,
+				E9D870A8160CB7E5007135B7 /* example_sweep_params.py */,
+				E9362EDB1599F2150001DE9F /* asrc_example_simulation_parameters.py */,
+			);
+			name = Inputs;
+			sourceTree = "<group>";
+		};
+		A179F8E714BF28DF00B17CA0 /* Runners */ = {
+			isa = PBXGroup;
+			children = (
+				E9CBE8C1160B75C3004F8E48 /* permutes.py */,
+				A179F8D314BF284D00B17CA0 /* runner.py */,
+				A1EDBB56151A160F00C82412 /* generate_params_for_sweep.py */,
+				E9362EDD1599F7840001DE9F /* generate_params_for_sweep_asrc.py */,
+				E9D870AA160CB8C6007135B7 /* generate_sweep_new.py */,
+				A179F8D214BF284D00B17CA0 /* run_from_params_files.py */,
+				A1EE96D7154D63EA00823CDC /* run_from_params_files_em.py */,
+				A179F8CA14BF284D00B17CA0 /* pool_runner.py */,
+				A179F8C314BF284D00B17CA0 /* oneworkload.sh */,
+				A179F8BF14BF284D00B17CA0 /* many_workloads_generation.py */,
+				E91273AA1593275D0014ECBE /* xgrid_runner.py */,
+			);
+			name = Runners;
+			sourceTree = "<group>";
+		};
+		A179F8E814BF295600B17CA0 /* testing */ = {
+			isa = PBXGroup;
+			children = (
+				A179F8B814BF284D00B17CA0 /* gstest.py */,
+			);
+			name = testing;
+			sourceTree = "<group>";
+		};
+		A179F8E914BF298A00B17CA0 /* outputs */ = {
+			isa = PBXGroup;
+			children = (
+				A179F8AF14BF284D00B17CA0 /* fairsharenotsure.png */,
+				A179F8B314BF284D00B17CA0 /* fifo job.png */,
+				A179F8B414BF284D00B17CA0 /* fifo task.png */,
+			);
+			name = outputs;
+			sourceTree = "<group>";
+		};
+		A179F8EA14BF29B600B17CA0 /* play */ = {
+			isa = PBXGroup;
+			children = (
+				E96C5CA015A7408E00E3E5F0 /* unique_lines.py */,
+				A13EF07014F565250038F4F2 /* interpret_real_to_sched.py */,
+				A1B3355A14F7998D00BF920F /* peak_cores_from_workload_rec.py */,
+				A179F8D914BF284D00B17CA0 /* simplest_sim.py */,
+				A179F8CC14BF284D00B17CA0 /* prunner_test.py */,
+				A179F8C014BF284D00B17CA0 /* member_test.py */,
+			);
+			name = play;
+			sourceTree = "<group>";
+		};
+		A179F8EB14BF2D1900B17CA0 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A179F8C814BF284D00B17CA0 /* platform_manager.py */,
+				A179F8CD14BF284D00B17CA0 /* req_man.py */,
+				A179F8CF14BF284D00B17CA0 /* resource_man.py */,
+				A179F8AA14BF284D00B17CA0 /* app_man.py */,
+				E9D4E13B173CF85E00B46F18 /* timeout_manager.py */,
+				E9F4656D1715F40200B796B7 /* inter_arrivals.py */,
+				A1B3AB8615322A5F00F2B302 /* network_delay_manager.py */,
+				A1BD4111154C5008009F7C28 /* task_state_new.py */,
+				E9D4E13C173D5CC400B46F18 /* simulation_exceptions.py */,
+				E990BEDE16C959E800FDF0BC /* value_calculations.py */,
+				A179F8C114BF284D00B17CA0 /* metrics.py */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		A179F8EC14BF2D2A00B17CA0 /* Auxiliaries */ = {
+			isa = PBXGroup;
+			children = (
+				E96692F8179174C7004F568B /* asrc_sub.py */,
+				A179F8C414BF284D00B17CA0 /* parameter_loader.py */,
+				A179F8DC14BF284D00B17CA0 /* testimport.py */,
+				A179F8BB14BF284D00B17CA0 /* import_manager.py */,
+				A179F8B914BF284D00B17CA0 /* helpers.py */,
+				E9FCFE661741404100EE292F /* workload_loader.py */,
+			);
+			name = Auxiliaries;
+			sourceTree = "<group>";
+		};
+		A1B3AB8715322A8100F2B302 /* Deprecated_bits */ = {
+			isa = PBXGroup;
+			children = (
+				A179F8D614BF284D00B17CA0 /* scheduler_loader.py */,
+				A179F8DB14BF284D00B17CA0 /* smnew.py */,
+				A1BFC98B14D9996000B716E9 /* data_man.py */,
+			);
+			name = Deprecated_bits;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		A179F8A214BF27C900B17CA0 /* GridSim */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = A179F8A514BF27C900B17CA0 /* Build configuration list for PBXLegacyTarget "GridSim" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/python;
+			buildWorkingDirectory = "";
+			dependencies = (
+			);
+			name = GridSim;
+			passBuildSettingsInEnvironment = 1;
+			productName = GridSim;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		A179F89D14BF27C900B17CA0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "University of York";
+			};
+			buildConfigurationList = A179F8A014BF27C900B17CA0 /* Build configuration list for PBXProject "GridSim" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A179F89B14BF27C900B17CA0;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A179F8A214BF27C900B17CA0 /* GridSim */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		A179F8A314BF27C900B17CA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		A179F8A414BF27C900B17CA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A179F8A614BF27C900B17CA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A179F8A714BF27C900B17CA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A179F8A014BF27C900B17CA0 /* Build configuration list for PBXProject "GridSim" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A179F8A314BF27C900B17CA0 /* Debug */,
+				A179F8A414BF27C900B17CA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A179F8A514BF27C900B17CA0 /* Build configuration list for PBXLegacyTarget "GridSim" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A179F8A614BF27C900B17CA0 /* Debug */,
+				A179F8A714BF27C900B17CA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A179F89D14BF27C900B17CA0 /* Project object */;
+}

@@ -1,0 +1,16 @@
+"platform_filename":"platform2.plat"
+"workload_filename":"../grid_sim_run_files/Workload/chain_of_independent_chains_29.txt"
+"debugging_on" : True
+"cluster_orderer" : "identity"
+"cluster_allocator" : "first_free"
+"router_orderer": "identity"
+"router_allocator": "first_free"
+"target_utilisation": 80
+"staggered_release":True
+"simulation_max_time":100000000
+"faster_less_accurate_charting": True
+"faster_charting_factor":100
+"visualisation_enabled": False
+"visualise_each_task" : True
+"fairshare_tree_filename" : "fairshares1.txt"
+"print_global_metrics": True

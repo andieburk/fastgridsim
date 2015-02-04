@@ -1,0 +1,32 @@
+#Example Platform File
+
+Kind Kind1 architecture:x86,graphics:nvidia;cores:1,ram:4,disk:250
+Kind Kind2 architecture:ppc,graphics:ati;cores:2,ram:8,disk:120
+
+Router Rt1 Rt2 Rt3
+Router Rt2 Rt4 
+Router Rt3 Rt5 
+Router Rt4 Clust1 
+Router Rt5 Clust2 
+
+Cluster Clust1
+Resource Res1 Kind1
+Resource Res2 Kind1
+Resource Res3 Kind1
+Resource Res4 Kind1
+Resource Res5 Kind1
+Resource Res6 Kind1
+Resource Res7 Kind1
+Resource Res8 Kind1
+
+Cluster Clust2
+Resource Res9  Kind2
+Resource Res10 Kind2
+Resource Res11 Kind2
+Resource Res12 Kind2
+Resource Res13 Kind2
+Resource Res14 Kind2
+Resource Res15 Kind2
+Resource Res16 Kind2
+
+

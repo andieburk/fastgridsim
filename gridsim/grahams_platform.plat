@@ -1,0 +1,10 @@
+#graham's platform
+
+Kind Kind1 architecture:x86,graphics:nvidia;cores:1,ram:4,disk:250
+
+Router Router1 Clust1
+Cluster Clust1
+Resource Res1 Kind1
+Resource Res2 Kind1
+Resource Res3 Kind1
+

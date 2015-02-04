@@ -1,0 +1,13 @@
+#python simulation parameters class
+
+
+class parameter_manager(object):
+	def read_parameters(self, filename):
+		f = open(filename)
+		lines = f.readlines()
+		f.close()
+		
+		oneline = ','.join(lines)
+		sim_params_dict_line = '{' + oneline + '}'
+		sim_params_dict = eval(sim_params_dict_line)
+		return sim_params_dict

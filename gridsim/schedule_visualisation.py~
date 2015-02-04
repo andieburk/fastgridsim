@@ -1,0 +1,202 @@
+#schedule visualisation
+
+from metrics import job_metrics
+from helpers import *
+import numpy
+import pylab
+
+
+class task_viewer(object):
+	def __init__(self, task):
+		self.task = task
+
+	def get_requirements_kind(self):
+		return self.task.requirements_kind
+	
+	def get_core_count(self):
+		return len(self.task.kernels)
+	
+	def get_dependencies(self):
+		return self.task.dependency_manager.dependencies
+		
+	def get_dependents(self):
+		return self.task.dependency_manager.dependents
+	
+	def get_execution_time(self):
+		return self.task.exectime
+	
+	def start_time(self):
+		return self.task.starttime
+	
+	def finish_time(self):
+		return self.task.finishtime
+	
+	def parent_job_id(self):
+		return self.task.parent_job.name
+	
+	def get_exec_node_name(self):
+		return self.get_exec_node().name
+	
+	def get_exec_node(self):
+		if len(self.task.execnodes) > 1:
+			print "error - trying to ask for a single exec node for a multicore task"
+			exit()
+		else:
+			return self.task.execnodes[0]
+
+
+
+
+
+class schedule_visualiser(object):
+	def __init__(self, simulation_parameters):
+		self.sim_params = simulation_parameters	
+	
+	def print_useful_metrics(self, job):
+		jmetrics_calc = job_metrics()
+		print "\n----\n\n"
+		print job.jobid
+		print "was submitted at ", jmetrics_calc.job_submission_time(job)
+		print "started executing at", jmetrics_calc.job_start_executing_time(job)
+		print "finished executing at", jmetrics_calc.job_finish_executing_time(job)
+		print "therefore was in flight for", jmetrics_calc.job_in_flight_time(job)
+		print "and had a turnaround time of", jmetrics_calc.job_submit_to_finish_time(job)
+		print "its critical path length is", jmetrics_calc.job_critical_path_length(job)
+		print "giving a ratio of turnaround time/critical path length of", jmetrics_calc.job_turnaround_over_critical_path_ratio(job)
+	
+	
+	def print_metrics_for_all_jobs(self, joblist):
+		for j in joblist:
+			self.print_useful_metrics(j)
+	
+	
+	def simple_vis(self, joblist, resource_list):
+		overall_finish_time = max([t.finishtime for j in joblist for t in j.tasklist])
+		print "overall_finish_time", overall_finish_time
+	
+	def task_name_to_colour(self, task, job_name_to_colour):
+		if "visualise_each_task" in self.sim_params.keys() and \
+		    self.sim_params["visualise_each_task"]:
+				numjobs = len(job_name_to_colour.keys())
+				num_tasks = len(task.parent_job.tasklist)
+				task_fraction = 0.33 / float(numjobs * num_tasks)
+				task_colour_fraction = task_fraction * [t.taskid for t in task.parent_job.tasklist].index(task.taskid)
+				task_colour = job_name_to_colour[task.parent_job.name] + task_colour_fraction
+				return task_colour			
+		else:
+			return job_name_to_colour[task.parent_job.name]
+	
+	
+	def visualise_schedule_new(self, joblist, resource_list):
+		
+		resource_names = [r.name for r in resource_list]
+		num_resources = len(resource_names)
+		rname_to_id = {}
+		for i in range(num_resources):
+			rname_to_id[resource_names[i]] = i
+
+		num_jobs = len(joblist)
+		job_name_to_colour = {}
+		for i in range(num_jobs):
+			job_name_to_colour[joblist[i].name] = float(i+1)/float(num_jobs) 
+		
+		overall_finish_time = max([t.finishtime for j in joblist for t in j.tasklist])
+		
+		vis_sched_arr = numpy.zeros((num_resources, overall_finish_time))
+		for j in joblist:
+			for t in j.tasklist:
+				tv = task_viewer(t)
+				task_start_time = tv.start_time()
+				task_finish_time = tv.finish_time()
+				execnodeid = rname_to_id[tv.get_exec_node_name()]
+				task_colour = self.task_name_to_colour(t, job_name_to_colour)
+				
+				vis_sched_arr[execnodeid][task_start_time : task_finish_time] = task_colour
+		
+		if self.sim_params["faster_less_accurate_charting"] and overall_finish_time > 1024:
+			ten_times_smaller = numpy.zeros((num_resources, overall_finish_time/self.sim_params["faster_charting_factor"]))
+			
+			for i in range(overall_finish_time/self.sim_params["faster_charting_factor"]):
+				for rid in range(num_resources):
+					ten_times_smaller[rid][i] = numpy.median(vis_sched_arr[rid][i*self.sim_params["faster_charting_factor"]:i*self.sim_params["faster_charting_factor"]+self.sim_params["faster_charting_factor"]-1])
+			
+			vis_sched_arr = ten_times_smaller
+		
+		c = pylab.pcolor(vis_sched_arr)
+
+		pylab.title = 'schedule'
+		
+		pylab.show()
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+
+	def visualise_schedule(self,joblist, resource_list):
+		
+		schedule = {}
+		s2 = {}
+		resource_names = [r.name for r in resource_list]
+		
+		for rn in resource_names:
+			schedule[rn] = []
+			s2[rn] = []
+		
+
+		for j in joblist:
+			for t in j.tasklist:
+				tv = task_viewer(t)
+				tinfo = [t.starttime, t.taskid, t.parent_job.jobid, t.finishtime]
+				if tv.get_exec_node_name() in schedule.keys():
+					schedule[tv.get_exec_node_name()].extend([tinfo])
+					s2[tv.get_exec_node_name()].extend([t.parent_job.jobid] * (t.finishtime - t.starttime))
+				else:
+					schedule[tv.get_exec_node_name()] = [tinfo]
+					s2[tv.get_exec_node_name()] = [t.parent_job.jobid] * (t.finishtime - t.starttime)
+		
+		for execnode in schedule.keys():
+			sorted_list = sorted(schedule[execnode], key = first_of)
+			schedule_list = []
+			for t in sorted_list:
+				schedule_list.extend([str(t[0]), str(t[1]), str(t[2][:-1]), str(t[3]), '\n'])
+			
+			schedule_string = ' '.join(schedule_list)
+			print execnode + ':\n' + schedule_string
+		
+		print schedule.keys()
+		maxtime = max([t.finishtime for t in j.tasklist for j in joblist])
+		
+		vis_sched = [([0] * maxtime) for n in range(len(schedule.keys()))]
+		
+		for j in joblist:
+			for t in j.tasklist:
+				tv = task_viewer(t)
+				vis_sched[schedule.keys().index(tv.get_exec_node_name())][t.starttime : t.finishtime] = [t.parent_job.jobid] * (t.finishtime - t.starttime)
+		
+		print len(vis_sched)
+		print max([len(vis_sched[i]) for i in range(len(vis_sched))])
+
+		
+		vis_sched_arr = numpy.zeros((len(vis_sched),max([len(vis_sched[i]) for i in range(len(vis_sched))])))
+		exit()	
+		for i in range(len(vis_sched)):
+			for j in range(len(vis_sched[i])):
+				vis_sched_arr[i][j] = vis_sched[i][j]
+
+		#pylab.subplot(2,1,1)
+
+		c = pylab.pcolor(vis_sched_arr)
+
+		pylab.title = 'schedule'
+		
+		pylab.show()
+		
+		

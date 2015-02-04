@@ -1,0 +1,46 @@
+#useful helper functions
+
+
+
+def listalltrue(ls):
+	#print list
+	if len(ls) == 0:
+		return True
+	else:
+		return reduce(lambda x, y: x and y, ls)
+		
+		
+def listcontainstrue(ls):
+	if len(ls) == 0:
+		return False
+	elif len(ls) == 1:
+		return ls[0]
+	else:
+		return reduce(lambda x, y: x or y, ls)
+	
+
+def strip_duplicates_in_list_of_dicts(dictlist):
+	newlist = []
+	for d in dictlist:
+		append = True
+		for n in newlist:
+			if d == n:
+				append = False
+		if append:
+			newlist.append(d)
+	return newlist
+	
+
+class idcounter:
+	def __init__(self):
+		self.count = 0
+	
+	def newid(self):
+		c = self.count
+		self.count += 1
+		return c
+
+
+def first_of(value):
+	return value[0]
+	

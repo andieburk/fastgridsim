@@ -1,0 +1,359 @@
+"""
+gridsim.py
+the new controller for the refactored and restructured grid simulation framework
+Andrew Burkimsher
+October 2011
+"""
+
+
+import numpy
+from helpers import *
+from parameter_loader import parameter_loader
+from app_man import TaskState, task, job, application_manager
+from req_man import requirements_manager
+from resource_man import ResourceManager, Cluster, Router
+from platform_manager import platform_manager, platform_manager_constructor
+from schedulers import *
+from fairshare_scheduler import FairshareScheduler
+from schedule_visualisation import schedule_visualiser
+from metrics import job_metrics, global_metrics
+from import_manager import import_manager
+import_manager_local = import_manager()
+if import_manager_local.import_trace:
+	from SimPy.SimulationTrace import *
+else:
+	from SimPy.Simulation import *
+
+print "loading simulation parameters"
+
+if len(sys.argv) < 2:
+	simulation_parameters_filename = "example_simulation_parameters1.py"
+else:
+	simulation_parameters_filename = sys.argv[1]
+
+
+print "setting up simulation parameters"
+if fairshare_enabled:
+	global_fairshare_manager = FairshareScheduler()
+else:
+	global_fairshare_manager = None
+global_parameter_manager = parameter_loader()
+
+simulation_parameters = global_parameter_manager.get_params(simulation_parameters_filename, global_fairshare_manager)
+
+
+
+print "starting...."
+
+print 'init SimPy library'
+initialize()
+
+print 'initialising platform (requirements and platform managers)'
+platform_constructor = platform_manager_constructor()
+global_req_manager, global_platform_manager = \
+	platform_constructor.construct_requirements_and_platform_from_file(simulation_parameters)
+
+print 'adding task requirements to requirements_manager as unimplemented in read applications from file'
+nk = global_req_manager.new_kind([("architecture", "x86")],[("ram", 1)])
+simulation_parameters["task_unspecified_kind"] = nk
+
+print 'init applications'
+#create the application(s)
+global_application_manager = application_manager("global_application_manager", global_platform_manager, simulation_parameters)
+
+if fairshare_enabled:
+	print 'init fairshare'
+	global_fairshare_manager.activate(simulation_parameters, global_platform_manager, global_application_manager)
+	print global_fairshare_manager.user_for_jobid
+
+print 'platform go'
+#let the platform processes go
+global_platform_manager.go()
+
+print 'applications go'
+#let the application processes go
+activate(global_application_manager, global_application_manager.go(), at=0)
+
+print 'simulation go'
+
+#perform the simulation
+simulate(until = simulation_parameters['simulation_max_time'])
+
+print "simulation finished at time", now()
+				
+
+for j in global_application_manager.joblist:
+	for t in j.tasklist:
+		if t.starttime == None or t.finishtime == None:
+			print "fatal error: simulation has ended but some tasks have not run:"
+			print [p.taskid for jp in global_application_manager.joblist for p in jp.tasklist if p.starttime < 0]
+			#print [n.taskid for n in global_platform_manager.router_scheduler.task_fifo_queue]
+			exit()
+
+if simulation_parameters["print_global_metrics"]:
+	print "printing metrics"
+	global_metrics_manager = global_metrics(global_application_manager, global_platform_manager, simulation_parameters, now())
+	global_metrics_manager.print_global_metrics()
+
+
+if simulation_parameters["visualisation_enabled"]:
+	print "visualising simulation results"
+	global_schedule_visualiser = schedule_visualiser(simulation_parameters)
+	#global_schedule_visualiser.print_metrics_for_all_jobs(global_application_manager.joblist)
+	global_schedule_visualiser.visualise_schedule_new(global_application_manager.joblist, global_platform_manager.resources)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+print "starting...."
+
+initialize()
+
+jobcounter = idcounter()
+nodecounter = idcounter()
+
+print 'init timer'
+timer = timerprint()
+
+print 'init req manager'
+global_req_manager = requirements_manager()
+all_task_profiles = set_up_task_profiles(global_req_manager)
+
+print 'init sim params'
+#parameters for the workload
+
+if len(sys.argv) < 2:
+	using_command_line_variables = False
+else:
+	using_command_line_variables = True
+
+
+if using_command_line_variables:
+	print sys.argv[1], sys.argv[2], sys.argv[3]
+	utilisation_value = sys.argv[2]
+	if sys.argv[1] == "fifo_task":
+		scheduler_value = fifo_task_scheduler()
+		orderer_value = fifo_orderer
+	elif sys.argv[1] == "random_demand":
+		scheduler_value = random_demand_scheduler()
+		orderer_value = fifo_orderer
+	elif sys.argv[1] == "fifo_job":
+		scheduler_value = fifo_job_scheduler()
+		orderer_value = fifo_job_task_orderer_routine
+	else:
+		print "fatal error: invalid scheduler input"
+		exit()
+	workload_filename = sys.argv[3]
+else:
+	scheduler_value = fifo_task_scheduler()
+	orderer_value = fifo_orderer
+	utilisation_value = 100
+	workload_filename = "workload1.wld"
+
+
+
+
+
+sim_params_list = [		  ('random_seed', 12346),\
+				   ('taskexecmin', 5),\
+					('taskexecmax', 10),\
+					 ('mintasks', 2),\
+					  ('maxtasks', 5),\
+					   ('depprob', 0.3),\
+					    ('numjobs', 800),\
+						 ('numnodes', 1000),\
+						  ('taskprofiles', all_task_profiles),\
+						   ('job_fan_out_breadth', 1),\
+						    ('job_dependency_levels', 3),\
+							 ('fan_out_task_profile', all_task_profiles[0]),\
+							  ('scheduler', scheduler_value),\
+							   ('tasklist_generator_function', 'fanout'),\
+							    ('simulation_max_time', 2000000),\
+							    ('staggered_release', True),\
+							     ('target_utilisation_percent', utilisation_value),\
+								 ('platform_kind_id', 2),\
+								 ('platform_2_proc_count', 2),\
+								  ('long_jobs_present', True),\
+								   ('long_jobs_percent', 10),\
+								    ('orderer', orderer_value)\
+							      ]
+
+simulation_parameters = dict(sim_params_list)
+
+print 'init random seed'
+random.seed(simulation_parameters['random_seed'])
+
+print 'init platform'
+#create the platform
+global_platform_manager = platform_manager(global_req_manager, simulation_parameters)
+
+print 'init applications'
+#create the application(s)
+global_application_manager = application_manager(simulation_parameters, "global_application_manager", filename=workload_filename)
+
+
+print 'timer go'
+#activate(timer, timer.go(), at=now())
+
+print 'platform go'
+#let the platform processes go
+global_platform_manager.go()
+
+print 'applications go'
+#let the application processes go
+activate(global_application_manager, global_application_manager.go(global_platform_manager), at=0)
+
+print 'simulation go'
+
+#perform the simulation
+simulate(until = simulation_parameters['simulation_max_time'])
+
+print "curr time is now ", now()
+
+
+
+for j in global_application_manager.joblist:
+	for t in j.tasklist:
+		if t.starttime == -1 or t.finishtime == -1:
+			print "fatal error: simulation has ended but some tasks have not run"
+			print t.taskid
+			print [p.taskid for jp in global_application_manager.joblist for p in jp.tasklist if p.starttime < 0]
+			#print [n.taskid for n in global_platform_manager.router_scheduler.task_fifo_queue]
+			exit()
+
+
+
+#calculation of metrics
+
+print simulation_parameters
+
+print_executed_schedule(global_application_manager.joblist)
+
+
+global_metrics_manager = metrics(global_application_manager.joblist, global_platform_manager.get_resources())
+
+for j in global_metrics_manager.joblist:
+	j.print_job()
+	global_metrics_manager.print_useful_metrics(j)
+#print global_metrics_manager.cluster_total_utilisation()
+print global_metrics_manager.print_global_metrics(global_application_manager.joblist)
+
+
+#print global_platform_manager.router_scheduler.callcount
+
+
+
+"""
+
+thoughts
+
+
+how to deal with RAM capacity constraints?
+especially where many cores and large pool of ram. but process on one core may use all the ram, leaving it inaccessible to the rest of the procs.
+
+model architecurres as eg x_86 low memory, x_86 high memory. low can run on high; but high cannot run on low.
+implement architecture as a tuple. how to do quick checking? make method call in each task; hence job; to say 'is this node good for you'.
+
+networking delay constraints
+
+need to add a dependency 'data size' field.
+then once a task finishes, add new event when data will be ready on its successor tasks if they are on different resources.
+
+TODO tasks failing, and having to be re-run from some point in their execution - will interrupt given schedule. proc free early but 
+probabilities of tasks failing in same place, in different place - work model to decide which is best....
+
+split the schedulers:
+one kind for scheduling tasks
+one kind for scheduling jobs
+make these separate fields in the routers.
+
+
+
+rather important.
+have not split ordering and allocation. they have been lumped together in an arcane way. 
+this model does allocation and then ordering.
+trying to get ordering right simply by doing allocation in the right order.
+
+the routers should call an allocator.
+the resource managers should call an 'orderer'. 'which task next'. 
+actually no. resource managers should call an orderer that can produce a monotonically increasing and unique 'priority'.
+the tasks should then be queued on the resource using the in-built resource priority queue.
+
+
+
+actually 3 separate 'policies'
+
+consideration order - which tasks should be considered for scheduling first_of
+allocation - which proc should each task be allocated to
+processing order - what order should allocated tasks be run in?
+
+
+
+"""
+
+
+
+
+
+
+
+
+
+
+
+

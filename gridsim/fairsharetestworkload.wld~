@@ -1,0 +1,22 @@
+#fair share workload
+
+Job 1
+Task 1 10 
+Task 2 10 1
+Task 3 10 2
+Task 4 10 3
+Task 5 10 4
+
+Job 2
+Task 6 10 
+Task 7 10 6
+Task 8 10 7
+Task 9 10 8
+Task 10 10 9
+
+Job 3
+Task 11 10 
+Task 12 10 11
+Task 13 10 12
+Task 14 10 13
+Task 15 10 14

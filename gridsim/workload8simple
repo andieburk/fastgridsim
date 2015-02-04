@@ -1,0 +1,9 @@
+Job j1 0 /root/group1/anna curve_8.0
+Task t1 1 10 Kind1
+#Task t4 1 1 Kind1 t1
+
+Job j2 0 /root/group1/becca curve_2.0
+Task t2 1 10 Kind1
+
+Job j3 10 /root/group1/cara curve_4.0
+Task t3 1 10 Kind1 

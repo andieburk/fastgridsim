@@ -1,0 +1,20 @@
+from pool_runner import *
+import os
+
+
+parameters_folder_path = "/home/andy/Documents/grid_sim_run_files/Parameters/interesting/"
+output_logs_path = "/home/andy/Documents/grid_sim_run_files/Runlogs/"
+
+parameters = os.listdir(parameters_folder_path)
+
+base_exec_string = "python gridsim.py " 
+end_exec_string = " > "
+
+exec_strings = ["python gridsim.py " + parameters_folder_path + p + " > " + output_logs_path + "run_log_for_" + p for p in parameters]
+
+print exec_strings
+
+exit()
+parallel_exec_strings(exec_strings)
+
+print len(exec_strings), "simulations finished executing"

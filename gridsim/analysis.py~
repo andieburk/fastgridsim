@@ -1,0 +1,12 @@
+#post-simulation analysis
+
+import os
+
+run_match_string = "*.txt"
+run_log_folder = "../grid_sim_run_files/Runlogs/"
+analysis_folder = "../grid_sim_run_files/Analysis/"
+analysis_aggregate_file_name = "filtered_output.txt"
+
+
+os.system("grep \#-\# " + run_log_folder + run_match_string + " >  " + analysis_folder + analysis_aggregate_file_name)
+

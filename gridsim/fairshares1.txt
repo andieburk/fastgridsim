@@ -1,0 +1,37 @@
+#Example Fairshare tree file
+
+share /root 1
+share /root/group1 1
+share /root/group2 1
+share /root/group3 1
+share /root/group4 2
+share /root/group5 1
+share /root/group1/anna 10
+share /root/group1/becca 10
+share /root/group1/cara 5
+share /root/group2/dana 10
+share /root/group2/ella 10
+share /root/group2/fara 10
+share /root/group3/gemma 1
+share /root/group3/hanna 2
+share /root/group3/ida 3
+share /root/group4/jenna 3
+share /root/group4/kara 4
+share /root/group4/lana 5
+share /root/group4/mera 6
+share /root/group4/nora 3
+share /root/group4/olga 4
+share /root/group4/petra 5
+share /root/group4/qia 3
+share /root/group4/rana 4
+share /root/group4/sara 2
+share /root/group5/tana 1
+share /root/group5/ulla 1
+share /root/group5/viva 1
+share /root/group5/wanda 1
+share /root/group5/xandra 1
+share /root/group5/yena 1
+share /root/group5/zara 3
+
+
+#jenna's fair share percentage should be 1 * (2.0/6) * (3.0/39) = 0.02564102564102564

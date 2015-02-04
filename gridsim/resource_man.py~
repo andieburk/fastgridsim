@@ -1,0 +1,587 @@
+# Resource Management classes for gridsim
+
+from app_man import TaskState
+from import_manager import import_manager
+import_manager_local = import_manager()
+if import_manager_local.import_trace:
+	from SimPy.SimulationTrace import *
+else:
+	from SimPy.Simulation import *
+
+
+class ResourceManager(Process):
+	
+	def __init__(self, resource_id, parent_cluster, simulation_parameters, resource_kind, requirements_manager):
+		Process.__init__(self, name=resource_id)
+		self.actualresource = Resource(capacity=1, name=resource_id, unitName="core", preemptable=False, monitored=True)
+		self.task_finished_event = SimEvent(name=resource_id+"_task_finished_event")
+		self.debugging_on = simulation_parameters["debugging_on"]
+		self.resource_kind = resource_kind
+		self.parent_cluster = parent_cluster #TODO test this
+		self.requirements_manager = requirements_manager
+		self.free_bool = True
+		self.current_task = None
+
+	def __pre_run_checks__(self, task):
+		if not self.requirements_manager.requirements_suitable(task.get_requirements_kind(), self.resource_kind):
+			print "fatal error: task assigned to invalid architecture"
+			exit()
+		if not self.free_bool:
+			print "fatal error: task assigned to busy resource"
+			exit()
+		if task.state_manager.state != TaskState.ready:
+			print "fatal error: non-ready task assigned to resource"
+			exit()
+
+	def free(self):
+		return self.free_bool
+	
+	def get_resource_kind(self):
+		return self.resource_kind
+		
+	def run_task(self, task):
+		# a few checks to ensure that tasks are not incorrectly executed
+		if self.debugging_on:
+			self.__pre_run_checks__(task)
+			#print 'task', task.taskid, 'is trying to run on resource', self.name
+		
+		self.free_bool = False
+		self.current_task = task
+		task.assign([self])
+
+	def expected_next_free(self):
+		if self.free_bool:
+			print "warning, requesting expected_next_free when the node is already free"
+			return now()
+		else:
+			return self.current_task.expected_finish_time()
+
+
+	def go(self):
+		#this should only be triggered when the task completes execution
+		iteration_count = 0
+		while True:
+			iteration_count += 1
+			if self.debugging_on:
+				print "resource manager", self.name, "iteration", iteration_count
+			yield waitevent, self, self.task_finished_event
+			self.current_task = None
+			self.free_bool = True
+			self.parent_cluster.update.signal()
+			
+
+class Cluster(Process):
+	
+	def __init__(self, clusterid, simulation_parameters):
+		Process.__init__(self,name=clusterid)
+		self.tasklist = []
+		self.joblist = []
+		self.orderer = simulation_parameters["cluster_orderer"]
+		self.allocator = simulation_parameters["cluster_allocator"]
+		self.debugging_on = simulation_parameters["debugging_on"]
+		self.update = SimEvent(name=clusterid+"_update_event")
+		self.iteration = 0
+		self.resources = None
+		self.last_update = -1
+		self.popped_task_ids = []
+		self.assigned_resource_ids = []
+
+	
+	def set_resources(self, resources):
+		if self.debugging_on:
+			self.__check_resources__(resources)
+		self.resources = resources
+
+	def __check_resources__(self, resources):
+		#a cluster needs at least one resource
+		if len(resources) < 1:
+			print "error, no resources specified for a cluster"
+			exit()
+			
+		#clusters should only be homogeneous
+		resource_kinds = [r.get_resource_kind() for r in resources]
+		num_kinds = len(set(resource_kinds))
+		if num_kinds != 1:
+			print "clusters should be homogeneous. more than one kind of resource specified"
+			exit()
+
+	def get_kinds(self):
+		return [r.get_resource_kind() for r in self.resources]
+	
+	def get_cluster_core_count(self):
+		if len(self.resources) > 0:
+			return len(self.resources)
+		else:
+			print "no resources defined when get_cluster_core_count called"
+			exit()
+
+	def assign_job(self, job):
+		self.joblist.append(job)
+		self.tasklist.extend(job.tasklist)
+	
+	def assign_tasks(self, tasks):
+		self.tasklist.extend(tasks)
+	
+	def decompose_queued_jobs(self):
+		for j in self.non_started_jobs:
+			self.joblist.append(j)
+			self.tasklist.extend(j.tasklist)
+	
+	def task_allocation_on_update(self):
+		if self.last_update < now():
+			self.popped_task_ids = []
+			self.assigned_resource_ids = []
+			self.last_update = now()
+		
+		tasks_to_assign_and_procs_available = True
+		
+		#prune completed tasks
+		self.tasklist = [t for t in self.tasklist if (t.state_manager.state != TaskState.completed)] #a HUGE speed optimisation: >100x increase
+		
+		while tasks_to_assign_and_procs_available:
+			readytasks = [t for t in self.tasklist if ((t.state_manager.state == TaskState.ready) and (t.taskid not in self.popped_task_ids))]
+			free_resources = [r for r in self.resources if (r.free() and (r.name not in self.assigned_resource_ids))]
+			tasks_to_assign_and_procs_available = (len(readytasks) > 0) and (len(free_resources) > 0)
+		
+			if tasks_to_assign_and_procs_available:
+				ordered_tasklist = self.orderer.ordered(readytasks)
+				
+				best_free_resource = self.allocator.best_for_task(ordered_tasklist[0], free_resources)
+				best_free_resource.run_task(ordered_tasklist[0])
+				
+				self.popped_task_ids.append(ordered_tasklist[0].taskid)
+				self.assigned_resource_ids.append(best_free_resource.name)
+			
+
+			
+			
+		
+	def go(self):
+		if self.debugging_on and (self.resources == None):
+			print self.resources
+			print len(self.resources)
+			print "error, no resources in activating cluster"
+			exit()
+		
+		while True :
+			self.iteration += 1
+			if self.debugging_on:
+				print "cluster", self.name, "iteration", self.iteration, "at", now()
+				#print [(t.taskid, t.state_manager.state) for t in self.tasklist]
+			self.task_allocation_on_update()
+			yield waitevent, self, self.update
+
+
+
+class Router(Process):
+	def __init__(self, router_id, sublist, requirements_manager, simulation_parameters):
+		Process.__init__(self, name=router_id)
+		self.update = SimEvent(name=router_id+" updating trigger")
+		self.jobqueue = []
+		self.reqs = requirements_manager
+		self.iteration = 0
+		self.sublist = sublist
+		self.sub_kinds = self.all_sub_kinds()
+		self.orderer = simulation_parameters["router_orderer"]
+		self.allocator = simulation_parameters["router_allocator"]
+		self.debugging_on = simulation_parameters["debugging_on"]
+		
+		#this version of router only supports homogeneous jobs. notable lack!
+		#TODO implement task queues and job splitting at higher levels across multiple clusters
+		
+	
+	def get_resource_kinds(self):
+		return self.sub_kinds
+	
+	def assign_job(self, job):
+		self.jobqueue.append(job)
+	
+	def all_sub_kinds(self):
+		kindlist = []
+		for s in self.sublist:
+			kindlist.extend(s.get_kinds())
+		return set(kindlist)
+		
+	def valid_subs_for_job(self, job):
+		rlist = [s for s in self.sublist if 
+			self.reqs.set_of_requirements_satisfied(
+				job.architectures_required(), s.get_kinds())]
+		if len(rlist) < 1:
+			print "error, no suitable cluster for job", job.name
+			exit()
+		return rlist
+
+	def assign_job_to_sub(self, job, sub):
+		sub.assign_job(job)
+	
+	def assign_all_jobqueue(self):
+		ordered_queue = self.orderer.ordered(self.jobqueue)
+		updated_subs = []
+		for j in self.jobqueue:
+			possible_subs = self.valid_subs_for_job(j)
+			best_sub = self.allocator.best_for_job(j, possible_subs)
+			self.assign_job_to_sub(j, best_sub)
+			updated_subs.append(best_sub)
+		
+		for s in updated_subs:
+			s.update.signal()
+	
+	def go(self):
+		while True:
+			self.iteration += 1
+			if self.debugging_on:
+				print "router", self.name, "iteration", self.iteration
+			self.assign_all_jobqueue()
+			yield waitevent, self, self.update
+
+
+
+if __name__ == "__main__":
+	pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+
+class router_old(Process):
+	def __init__(self, router_id, scheduler, level, is_resource_only, sublist, requirements_manager):
+		Process.__init__(self,name=router_id)
+		self.router_trigger_event = SimEvent(name=router_id+" updating trigger")
+		self.taskqueue = []
+		self.jobqueue = []
+		self.not_ready_job_queue = []
+		self.is_resource_only = is_resource_only
+		self.reqs = requirements_manager
+		self.router_id = router_id
+		self.iteration = 0
+		
+		#a router will either have subrouters, or subresources, but never both.
+		if self.is_resource_only :
+			self.subresources = sublist
+			self.subrouters = []
+			self.subresources_available = [s.get_resource_kind() for s in sublist]
+		else :
+			self.subresources = []
+			self.subrouters = sublist
+			
+			self.subresources_available = []
+			for s in sublist:
+				self.subresources_available.extend(s.get_resource_kinds())
+			
+		self.scheduler = scheduler
+		self.level = level
+	
+	
+	def get_resource_kinds(self):
+		return set(self.subresources_available)
+	
+	
+	def valid_subs_for_task(self, task):
+		
+		tk = task.get_resource_kind()
+			
+		if self.is_resource_only:
+			
+			rlist = [s for s in self.subresources if self.reqs.requirements_suitable(tk, s.get_resource_kind()) ]
+			
+			if len(rlist) == 0:
+				print "we have a problem here!"
+				exit()			
+			
+			return rlist
+		else:
+			valid = []
+						
+			for s in self.subrouters:
+				#print s.get_resource_kinds()
+				truthlist = [self.reqs.requirements_suitable(tk, k) for k in s.get_resource_kinds()]
+				#print truthlist
+				if listcontainstrue(truthlist):
+					valid.append(s)
+					
+			if len(valid) == 0:
+				print "we have a problem here too!"
+				print self.reqs.memoising_dict
+				exit()					
+			
+			return valid
+	
+	
+	def allocate_all_tasks(self, number):
+		
+		new_task_list = [self.taskqueue[i] for i in range(len(self.taskqueue)) if not self.allocate_a_task(self.taskqueue[i])] #this actually performs the allocations by side-effect of the allocate_a_task call
+		self.taskqueue = new_task_list
+			
+	
+	def allocate_a_task(self, task):
+		node = self.scheduler.best_resource_for_task(task, self.valid_subs_for_task(task))
+		if node is None:
+			return False
+		else:
+			self.single_task_next_level_down(task, node)
+			return True
+	
+	def single_task_next_level_down(self, task, node):
+		if self.is_resource_only:
+			node.add_new_task(task)
+		else:
+			node.assign_task(task)
+
+	
+	
+	def allocate_a_job(self, job):
+
+		arch_reqs = job.architectures_required()
+		possible_subrouters = [sub for sub in self.subrouters if arch_reqs.issubset(sub.get_resource_kinds())]
+
+		if len(possible_subrouters) > 0:
+		#if a job can be completely performed by a sub-router (ie, the subrouter has hardware of all the right requirements to satisfy the job)
+		#then pass the whole job down to the best subrouter.
+			best_router = self.scheduler.best_router_for_job(job, possible_subrouters)		
+			best_router.assign_job(job)
+		
+		else:
+		#otherwise it will be necessary to break up the job here into tasks, and then allocate the tasks to where they can have resources.
+			for t in job.tasklist:
+				self.taskqueue.append(t)
+			job.exec_router_home = self
+	
+	
+	def allocate_all_jobs(self, number):		
+		for j in range(number):
+			job = self.jobqueue.pop()
+			self.allocate_a_job(job)
+		
+	
+	def update_pending_job_list(self):
+		all_jobs = []
+		all_jobs.extend(self.not_ready_job_queue)
+		all_jobs.extend(self.jobqueue)
+		self.not_ready_job_queue = [j for j in all_jobs if j.go_time < now()]
+		if len(self.not_ready_job_queue) > 0:
+			soonest_job_wake_up_time = min([j.go_time for j in self.not_ready_job_queue])
+			self.router_trigger_event.signal(at=soonest_job_wake_up_time)
+		self.jobqueue = [j for j in all_jobs if j.go_time >= now()]
+	
+	
+	def assign_job(self, job):
+		self.jobqueue.insert(0,job)
+		self.router_trigger_event.signal()
+		
+		
+	def assign_task(self, task):
+		self.taskqueue.insert(0,task)
+		self.router_trigger_event.signal()
+	
+	def go(self):
+		while True :
+			#print self.router_id, 'iteration', self.iteration, 'at ', now()
+			self.iteration += 1
+			self.update_pending_job_list()
+			self.allocate_all_jobs(len(self.jobqueue))
+			self.allocate_all_tasks(number=len(self.taskqueue))
+			if self.is_resource_only:
+				subs_updating_this_tick = [s for s in self.subresources if s.task_finished_not_yet_updated]
+				for s in subs_updating_this_tick:
+					s.resource_manager_update_event.signal()
+			
+			
+			yield waitevent, self, self.router_trigger_event
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class resource_manager_old(Process):
+	#sufficiently low-level that jobs will not be considered - only tasks.
+	#job scheduling and dependencies will happen in the 'routers'.
+	#tasks can still require many cores, as well as having 'priorities'
+	#routers will manage assignment to hardware that is satisfactory
+	#a resource manager will only look after one lot of hardware
+	#the hardware in a resource manager will be homogeneous and have a single storage pool
+	
+	
+	#at the moment - each core will have a certain amount of ram uniquely allocated
+	#this is a simplifying assumption - in reality, many cores share a single pool of ram.
+	#have to wait and see what to do about that.
+	
+	
+	
+	
+
+	def __init__(self, resource_id, resource_kind, requirements_manager, simulation_parameters):
+		Process.__init__(self,name=resource_id)
+		self.resource_manager_update_event = SimEvent(name=resource_id+" update trigger")
+		self.last_assign_time = -1
+		self.next_finish_time = -1
+		self.resource_kind = resource_kind
+		self.requirements_manager = requirements_manager
+		corecount = self.requirements_manager.get_kind_values(self.resource_kind)['quantity']['cores'] #TODO improve these lookups
+		self.actualresource = Resource(capacity=corecount, name=resource_id, unitName="coreunique", qType=PriorityQ, preemptable=False, monitored=True) #also TODO - make all 'quantity' types a resource with appropriate contention
+		self.taskqueue = []
+		self.pendingtaskset = []
+		self.finishtime_at_least = 0 #a monotonically increasing value to record the time the current volume of work will be completed by.
+		self.task_finished_not_yet_updated = True
+		self.orderer = simulation_parameters['orderer']
+
+	def how_soon_n_cores_free(self, num_cores):
+		
+		if self.actualresource.capacity > 1:
+			print "TODO error: how_soon_n_cores_free routine has not yet had multicore calculations implemented"
+			exit()
+		
+		if self.finishtime_at_least > now():
+			return self.finishtime_at_least
+		else:
+			return now()
+	
+	def how_soon_could_task_start(self, task):
+		#similar to how soon n cores free, but taking into account the 'priority' of the task
+		#working here
+		base_t = now()
+		if self.next_finish_time > now():
+			base_t = self.next_finish_time
+			
+		highers_sum = sum([t.exectime for t in self.taskqueue if t.parent_job.job_priority >= task.parent_job.job_priority])
+		
+		return base_t + highers_sum		
+		
+		
+	
+	def simple_task_finish_estimate(self, task):
+		waiting_task_durations = [i.parent_task.exectime for i in self.actualresource.waitQ]
+		total_work_waiting = sum(waiting_task_durations) + task.exectime
+		return float(total_work_waiting)/float(self.cpucorecount)
+		
+	def better_task_finish_estimate(self,task):
+		#TODO
+		return 0
+	
+	def get_resource_values(self):
+		return self.resource_manager.get_kind_values()
+	
+	def get_resource_kind(self):
+		return self.resource_kind
+
+	
+	def new_task_update_finishtime(self, task):
+		if self.finishtime_at_least <= now():
+			self.finishtime_at_least = now() + task.exectime
+		else:
+			self.finishtime_at_least += task.exectime
+	
+	
+	
+		
+	def add_new_task(self, task):
+		#this check may well be redundant, but leave it in for now as it could catch serious errors
+		if not self.requirements_manager.requirements_suitable(task.get_resource_kind(), self.resource_kind):
+			print "fatal error: task assigned to invalid architecture"
+			exit()
+		
+		task.set_execution_resource(self)		
+		
+		if task.state == TaskState.ready:
+			self.taskqueue.insert(0, task) #TODO make this more efficient
+			self.new_task_update_finishtime(task)
+			#task.exec_resource_manager = self
+			#self.schedule_queued_work()
+		else:
+			self.pendingtaskset.insert(0, task)
+			
+		self.resource_manager_update_event.signal()
+		
+
+	
+	
+	def schedule_queued_work(self):
+		#print now(), 'taskqueue', [t.taskid for t in self.taskqueue]
+		if self.last_assign_time < now() and self.next_finish_time <= now() :
+			if len(self.taskqueue) > 0:
+				
+				#print self.name, "actually scheduling at", now()
+				
+				self.taskqueue, task = self.orderer(self.taskqueue)
+				
+				#task = self.taskqueue.pop()
+				task.exec_resource_manager = self
+				
+				#print '### actually allocating task', task.taskid, 'to', self.actualresource.name ,'at ', now()
+				
+				task.assign(self.actualresource)
+				self.last_assign_time = now()
+				self.next_finish_time = now()+task.exectime
+				#tm = now() + task.exectime
+				#print 'should next tick at', tm
+				#self.resource_manager_update_event.signal(at=tm)
+			
+		
+		#for t_id in range(len(self.taskqueue)):
+		#	task = self.taskqueue.pop()
+		#	print '### actually allocating task', task.taskid, 'to', self.actualresource.name ,'at ', now()
+		#	task.assign(self.actualresource)
+
+	
+	def update_pending_list(self):
+		newpending = [t for t in self.pendingtaskset if t.state is not TaskState.ready]
+		newready   = [t for t in self.pendingtaskset if t.state is     TaskState.ready]
+		
+		self.pendingtaskset = newpending
+		for t in newready:
+			self.taskqueue.insert(0, t)
+			self.new_task_update_finishtime(t)
+
+	
+	def update_task_in_pending_list(self, task):
+		self.tasksqueue.put(self.pendingtaskset.pop(self.pendingtaskset.index(task)))
+	
+	def get_trigger_event(self):
+		return self.resource_manager_update_event
+	
+	def go(self):
+		it = 0
+		while True:
+			#print 'resource ', self.name, 'iteration ', it, 'at', now(), 'pendinglist', [t.taskid for t in self.pendingtaskset], 'active list', [t.taskid for t in self.taskqueue]
+			it += 1
+			self.update_pending_list()
+			self.schedule_queued_work()
+			task_finished_not_yet_updated = False
+			yield waitevent, self, self.resource_manager_update_event
+	
+			
+
+
+
+
+	#def get_data_from(self): # this is so that network latencies can be modelled
+	
+"""

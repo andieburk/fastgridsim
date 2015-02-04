@@ -1,0 +1,15 @@
+Job j1
+Task 1 1 
+Task 2 2 1
+Task 3 3 2
+
+Job j2
+Task 4 10 
+Task 5 10 4
+Task 6 10 5
+
+Job j3
+Task 7 1 
+Task 8 1 7
+Task 9 20 8
+

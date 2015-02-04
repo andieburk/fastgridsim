@@ -1,0 +1,338 @@
+"""schedulers.py
+
+"""
+
+import random
+
+class identity_orderer(object):
+	def ordered(self, ls):
+		return ls
+
+
+class fifo_job_orderer(object):
+	def ordered_jobs(self, ls):
+		smallest_job_id = min([j.name for j in ls])
+		return [j for j in ls if j.name == smallest_job_id]
+	
+	
+	def task_id(self, task):
+		return task.taskid
+	
+	def ordered(self,ls):
+		return sorted(ls, key=self.task_id)
+
+
+class random_allocator(object):
+	def best_for_task(self, task, free_resources):
+		return random.choice(free_resources)
+	
+	def best_for_job(self, job, resources):
+		return random.choice(resources)
+
+
+class first_free_allocator(object):
+	def best_for_task(self, task, free_resources):
+		return free_resources[0]
+	
+	def best_for_job(self, job, resources):
+		return resources[0]
+
+class first_free_better(object):
+	def best_for_task(self, task, free_resources):
+		pass
+
+
+
+
+
+"""
+
+
+
+
+class simplescheduler():
+	def __init__(self, nodelist):
+		self.nodelist = nodelist
+		self.curr_index = 0
+		self.call_count = 0
+	
+	def best_node_for_task(self, taskid):
+		self.call_count += 1
+		#print "##", self.curr_index, "call count ", self.call_count
+		best = self.nodelist[self.curr_index]
+		self.curr_index = (self.curr_index + 1) % (len(self.nodelist))
+		#print best
+		return best
+
+
+class better_scheduler():
+#thinking I will subclass these and then implement these routines to make sure that different schedulers all correspond to the same API
+	
+	
+	def __init__(self):
+		pass
+		#todo
+	
+	def best_resource_for_task(self, task, resource_list):
+		pass
+		#todo
+	
+	def best_router_for_job(self, job, router_list):
+		pass
+		#todo
+
+	def best_resources_for_tasklist(self, tasklist, resource_list):
+		pass
+		#todo
+	
+	def best_routers_for_jobs(self, jobs, router_list):
+		pass
+		#todo
+
+
+class random_scheduler(better_scheduler):
+
+	def __init__(self):
+		print "initialising the random scheduler"
+	
+	def best_resource_for_task(self, task, resource_list):
+	
+		if len(resource_list) == 0:
+			print "fatal error, no resources given"
+			print "task", task
+			print "resourcelist", resource_list
+			print "req kind", task.requirements_kind
+			exit()
+		elif len(resource_list) == 1:
+			return resource_list[0]
+		else:
+			return random.choice(resource_list)
+	
+	def best_router_for_job(self, job, router_list):
+		if len(router_list) == 0:
+			print "fatal error, no resources given"
+			exit()
+		elif len(router_list) == 1:
+			return router_list[0]
+		else:
+			rid = random.randint(0, len(router_list)-1)
+			return router_list[rid]
+
+	def best_resources_for_tasklist(self, tasklist, resource_list):
+		return [resource_list[random.randint(0, len(resource_list)-1)] for t in tasklist]
+	
+	def best_routers_for_jobs(self, jobs, router_list):
+		return [resource_list[random.randint(0, len(resource_list)-1)] for j in jobs]
+
+
+
+
+class random_demand_scheduler(better_scheduler):
+
+	def __init__(self):
+		print "initialising the random demand-driven scheduler"
+	
+	def best_resource_for_task(self, task, resource_list):
+		
+		if not task.dependencies_satisfied():
+			#print 'returning none'
+			return None
+		
+		
+		if len(resource_list) == 0:
+			print "fatal error, no resources given"
+			print "task", task
+			print "resourcelist", resource_list
+			print "req kind", task.requirements_kind
+			exit()
+		elif len(resource_list) == 1:
+			return resource_list[0]
+		else:
+		
+			readytimeresourcelist = [r.how_soon_n_cores_free(1) for r in resource_list]
+			
+			min_ready_time = min(readytimeresourcelist)
+			
+			all_min_resources = [resource_list[rid] for rid in range(len(resource_list)) if readytimeresourcelist[rid] == min_ready_time]
+			
+			random_res_of_mins = random.choice(all_min_resources)
+
+			#print 'returning resource ', random_res_of_mins.name
+			return random_res_of_mins
+	
+	def best_router_for_job(self, job, router_list):
+	
+		print 'error: unimplemented'
+		exit()
+	
+		if len(router_list) == 0:
+			print "fatal error, no resources given"
+			exit()
+		elif len(router_list) == 1:
+			return router_list[0]
+		else:
+			rid = random.randint(0, len(router_list)-1)
+			return router_list[rid]
+
+	def best_resources_for_tasklist(self, tasklist, resource_list):
+		return [resource_list[random.randint(0, len(resource_list)-1)] for t in tasklist]
+	
+	def best_routers_for_jobs(self, jobs, router_list):
+		return [resource_list[random.randint(0, len(resource_list)-1)] for j in jobs]
+
+
+
+
+
+
+class fifo_task_scheduler(better_scheduler):
+	def __init__(self):
+		print "initialising the fifo task scheduler"
+		self.task_fifo_queue = collections.deque()
+		self.callcount = 0
+	
+	def best_resource_for_task(self, task, resource_list):
+		#watch this routine for performance - it gets called very, very often!
+		#print 'finding a fifo task resource for', task.taskid
+		self.callcount += 1
+		
+		if task not in self.task_fifo_queue:
+			if task.dependencies_satisfied():
+				self.task_fifo_queue.append(task)
+			else:
+				return None
+	
+		if task is not self.task_fifo_queue[0]:
+			return None
+	
+		if not task.dependencies_satisfied():
+			#print 'returning none'
+			return None
+		if len(resource_list) == 0:
+			print "fatal error, no resources given"
+			print "task", task
+			print "resourcelist", resource_list
+			print "req kind", task.requirements_kind
+			exit()
+		elif len(resource_list) == 1:
+			#print 'returning ', resource_list[0]
+			self.task_fifo_queue.popleft()
+			return resource_list[0]
+		else:
+			readytimeresourcelist = [r.how_soon_n_cores_free(1) for r in resource_list]
+			#print readytimeresourcelist
+			res_index = readytimeresourcelist.index(min(readytimeresourcelist))
+			#print res_index
+			#print 'returning resource ', resource_list[res_index].name
+			self.task_fifo_queue.popleft()
+			return resource_list[res_index]
+	
+	
+	
+	
+	def best_router_for_job(self, job, router_list):
+		print "fatal error: TODO unimplemented routine1"
+		exit()
+		if len(router_list) == 0:
+			print "fatal error, no resources given"
+			exit()
+		elif len(router_list) == 1:
+			return router_list[0]
+		else:
+			#TODO
+			pass
+			
+
+	def best_resources_for_tasklist(self, tasklist, resource_list):
+		return [self.best_resource_for_task(t,resource_list) for t in tasklist]
+
+	
+	def best_routers_for_jobs(self, jobs, router_list):
+		print "fatal error: TODO unimplemented routine3"
+		exit()
+		#return [resource_list[random.randint(0, len(resource_list)-1)] for j in jobs]	
+	
+
+class fifo_job_scheduler(better_scheduler):
+	def __init__(self):
+		print "initialising the fifo job scheduler"
+		self.knowntasklist = set()
+		self.callcount = 0
+	
+	def best_resource_for_task(self, task, resource_list):
+		self.callcount += 1
+		
+
+		
+		if task not in self.knowntasklist:
+			if task.dependencies_satisfied():
+				self.knowntasklist.update(set([task]))
+			else:
+				return None
+
+		#print 'known task list',  [t.taskid for t in self.knowntasklist]
+
+		#if task.taskid is not min(t.taskid for t in self.knowntasklist):
+		#	return None
+	
+		if not task.dependencies_satisfied():
+			#print 'returning none'
+			return None
+		if len(resource_list) == 0:
+			print "fatal error, no resources given"
+			print "task", task
+			print "resourcelist", resource_list
+			print "req kind", task.requirements_kind
+			exit()
+		elif len(resource_list) == 1:
+			#print 'returning ', resource_list[0]
+			self.knowntasklist.difference_update(set([task]))
+			return resource_list[0]
+		else:
+			readytimeresourcelist = [r.how_soon_could_task_start(task) for r in resource_list]
+			#print readytimeresourcelist
+			res_index = readytimeresourcelist.index(min(readytimeresourcelist))
+			#print res_index
+			#print 'returning resource ', resource_list[res_index].name
+			self.knowntasklist.difference_update([task])
+			return resource_list[res_index]
+	
+	def best_router_for_job(self, job, router_list):
+		print 'error'
+		pass
+		#todo
+
+	def best_resources_for_tasklist(self, tasklist, resource_list):
+		return [self.best_resource_for_task(t,resource_list) for t in tasklist]
+	
+	def best_routers_for_jobs(self, jobs, router_list):
+		pass
+		#todo
+
+
+class orderer():
+	def __init__():
+		self.assigned_priorities = set([0])
+	
+	def task_ordered_priority(self,task):
+		return 0
+
+#class fifo_job_orderer(orderer):#
+#	def __init__():
+#		self.assigned_priorities = set([0])
+#		self.task_order_priority {}
+#	
+#	def task_ordered_priority(self,task):
+#		if task.taskid in self.task_order_priority.keys():
+#			return self.task_order_priority[task.taskid]
+#		else
+
+class fifo_job_orderer():
+	
+	#working here
+#	make the priority real number jobid integer . taskid integer over 1000 or some other large num - sufficiently large to be 10 times larger than task id can ever be. 
+	#then change inits to job and task creation. unique nums?
+	
+	def task_ordered_priority(self, task):
+		return task.taskid
+"""

@@ -1,0 +1,13 @@
+
+Job j1 0 /root/group1/anna
+Task t1 1 30 Kind1 
+
+
+Job j2 0 /root/group1/becca
+Task t4 1 20 Kind1 
+
+
+Job j3 0 /root/group1/cara
+Task t8 1 10 Kind1 
+
+

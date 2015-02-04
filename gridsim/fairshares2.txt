@@ -1,0 +1,8 @@
+#a second fair shares example
+
+share /root 100
+share /root/user1 1
+share /root/user2 1
+share /root/user3 1
+share /root/user4 1
+share /root/user5 1

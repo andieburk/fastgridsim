@@ -1,0 +1,26 @@
+#Example Platform File
+
+Kind Kind1 architecture:x86,graphics:nvidia;cores:1,ram:4,disk:250
+
+Router Router1 Clust1
+Cluster Clust1
+Resource Res1 Kind1
+Resource Res2 Kind1
+Resource Res3 Kind1
+Resource Res4 Kind1
+Resource Res5 Kind1
+Resource Res6 Kind1
+Resource Res7 Kind1
+Resource Res8 Kind1
+#Resource Res9 Kind1
+#Resource Res10 Kind1
+#Resource Res11 Kind1
+#Resource Res12 Kind1
+#Resource Res13 Kind1
+#Resource Res14 Kind1
+#Resource Res15 Kind1
+#Resource Res16 Kind1
+#Resource Res17 Kind1
+#Resource Res18 Kind1
+#Resource Res19 Kind1
+#Resource Res20 Kind1

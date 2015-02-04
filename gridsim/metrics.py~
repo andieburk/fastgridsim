@@ -1,0 +1,151 @@
+""" metrics.py
+"""
+
+import numpy
+
+class job_metrics(object):
+
+	def job_submission_time(self, job):
+		return job.submit_time
+
+	def job_start_executing_time(self, job):
+		return min([t.starttime for t in job.tasklist])
+	
+	def job_finish_executing_time(self, job):
+		return max([t.finishtime for t in job.tasklist])
+	
+	def job_in_flight_time(self, job):
+		return self.job_finish_executing_time(job) - self.job_start_executing_time(job)
+		
+	def job_submit_to_finish_time(self, job):
+		return self.job_finish_executing_time(job) - self.job_submission_time(job)
+
+	def job_sum_of_task_exec_times(self, job):
+		return sum([t.get_execution_time() for t in job.tasklist])
+
+	def job_turnaround_over_critical_path_ratio(self, job):
+		return float(self.job_submit_to_finish_time(job))/float(self.job_critical_path_length(job))
+	
+	def job_critical_path_length(self, job):
+		return self.down_exec_time(job)
+
+	def task_dependents_exec_time_sum(self, task):
+		if len(task.get_dependents()) > 0:
+			return task.get_execution_time() + sum([self.task_dependents_exec_time_max(t) for t in task.get_dependents()])
+		else:
+			return task.get_execution_time()
+	
+	def task_dependents_exec_time_max(self, task):
+		if len(task.get_dependents()) > 0:
+			return task.get_execution_time() + max([self.task_dependents_exec_time_max(t) for t in task.get_dependents()])
+		else:
+			return task.get_execution_time()
+
+	def down_exec_time(self, job): #aka critical path length
+		cumulative_times = {}
+		for t in job.tasklist:
+			
+			if len(t.get_dependencies()) > 0:
+				cumu_sum_times = max([cumulative_times[t2] for t2 in t.get_dependencies()])
+			else:
+				cumu_sum_times = 0
+			cumulative_times[t] = t.exectime + cumu_sum_times
+		
+		longest_critical_path_from_any_task = max(cumulative_times.values())
+		
+		return longest_critical_path_from_any_task
+	
+		
+	
+#	def up_exec_time(self, job):
+#		joblistback = [t for t in job.tasklist]
+#		joblistback.reverse()
+#		for t in joblistback:
+#			self_deps = [dep_task for dep_task in job.tasklist if t in set(dep_task.dependencies)]
+#			deps_cumu = sum([dpt.up_cumulative_execution_time for dpt in self_deps])
+#			up_cumu = t.exectime + deps_cumu
+#			t.up_cumulative_execution_time = up_cumu
+
+
+
+
+
+class global_metrics():
+	def __init__(self, application_man, platform_man, sim_params, sim_finish_time):
+		self.job_metrics_calc = job_metrics()
+		self.joblist = application_man.joblist
+		self.platman = platform_man
+		self.sim_finish_time = sim_finish_time
+		self.sim_params = sim_params
+		
+	def cluster_total_utilisation(self):
+		etimesum = sum([self.job_metrics_calc.job_sum_of_task_exec_times(j) for j in self.joblist])
+		return 100.0 * (float(etimesum)/(len(self.platman.resources) * (self.sim_finish_time+1)))
+	
+	
+	def utilisation_other(self):
+		used_cycles = sum([sum([t.exectime for t in j.tasklist]) for j in self.joblist])
+		print 'utilisation', 100.0 * (float(used_cycles) / (float(len(self.platman.resources)) * float(self.sim_finish_time+1)))
+	
+	
+	
+	
+	
+	
+
+	
+	def print_global_metrics(self):
+		
+		all_turnaround_ratios = [self.job_metrics_calc.job_turnaround_over_critical_path_ratio(j) for j in self.joblist]
+		#print all_turnaround_ratios
+		print 'of all turnaround ratios in this run: min, median, mean, max: ', min(all_turnaround_ratios), numpy.median(all_turnaround_ratios), numpy.average(all_turnaround_ratios), max(all_turnaround_ratios)
+		print 'cluster utilisation', self.cluster_total_utilisation()
+		self.utilisation_other()
+		
+		#short_res = []
+		#for j in self.joblist:
+		#	short_res.append(self.job_submit_to_finish_time(j))
+		#	short_res.append(self.job_in_flight_time(j))
+		#	short_res.append(self.job_critical_path_length(j))
+		#print short_res
+		
+
+		res1 = [float(self.job_metrics_calc.job_submit_to_finish_time(j))/float(self.job_metrics_calc.job_critical_path_length(j)) for j in self.joblist]
+		res2 = [float(self.job_metrics_calc.job_in_flight_time(j))/float(self.job_metrics_calc.job_critical_path_length(j)) for j in self.joblist]
+		#print res1
+		#print res2
+		#print numpy.average(res1)
+		#print numpy.average(res2)
+		
+		res1a = numpy.array(res1)
+		res2a = numpy.array(res2)
+		
+		res = [	utilisation_value,\
+				numpy.average(res1a),\
+				numpy.amin(res1a),\
+				numpy.median(res1a),\
+				numpy.amax(res1a),\
+				numpy.average(res2a),\
+				numpy.amin(res2a),\
+				numpy.median(res2a),\
+				numpy.amax(res2a)\
+			  ]
+		
+		res_str = [str(r) for r in res]
+		print '#-#,' , ','.join(res_str)		
+		
+		
+		
+		
+		#numpy.average(res2)',', numpy.median(res1), ',', numpy.median(res2)
+		#print '#-# , ',utilisation_value, ',', numpy.median(res1), ',', numpy.median(res2)
+		
+		
+		workloadsum = sum([self.job_metrics_calc.job_sum_of_task_exec_times(j) for j in self.joblist])
+		print 'sum of all exec times' , workloadsum
+		
+		
+		
+		#working here
+
+

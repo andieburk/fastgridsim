@@ -1,0 +1,55 @@
+#parameter loader .py
+
+
+from fairshare_scheduler import *
+from schedulers import *
+
+class scheduler_loader(object):
+	def name_to_orderer(self, orderer_name, fairshare_manager):
+		if orderer_name == "fifo_job":
+			return fifo_job_orderer()		
+		
+		elif orderer_name == "fifo_task" or orderer_name == "identity":
+			return identity_orderer()
+		
+		elif orderer_name == "fair_share":
+			return fairshare_manager.FairshareScheduler()
+		
+	def name_to_allocator(self, allocator_name):
+		if allocator_name == "first_fit" or allocator_name == "first_free":
+			return first_fit_allocator()
+		elif allocator_name == "random":
+			return random_allocator()
+		else:
+			print "error - invalid allocator name: ", allocator_name
+			exit()
+	
+
+class parameter_loader(object):
+	def get_params(self, params_filename, fairshare_manager):
+		f = open(params_filename)
+		lines = f.readlines()
+		line = ','.join(lines)
+		final_dict_line = '{' + line + '}'
+		full_dict = eval(final_dict_line)
+		
+		sl = scheduler_loader()
+		
+		full_dict["cluster_orderer"] = sl.name_to_orderer(full_dict["cluster_orderer"], fairshare_manager)
+		full_dict["router_orderer"] = sl.name_to_orderer(full_dict["router_orderer"], fairshare_manager)
+		full_dict["cluster_allocator"] = sl.name_to_allocator(full_dict["cluster_allocator"])
+		full_dict["router_allocator"] = sl.name_to_allocator(full_dict["router_allocator"])
+		
+		return full_dict
+		
+		
+		
+		
+if __name__ == "__main__":
+	p = parameter_loader()
+	params = p.get_params("example_simulation_parameters1.py")
+	print len(params.keys())
+	print params["debugging_on"]
+	print params
+
+

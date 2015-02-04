@@ -1,0 +1,25 @@
+
+Job j1 -2 /root/group1/anna curve_slr
+Task t1 4 10 Kind1 
+Task t2 4 10 Kind2 t1
+Task t3 4 10 Kind1 t2
+
+Job j2 -2 /root/group1/becca curve_deadline2
+Task t4 2 10 Kind1 
+Task t5 2 10 Kind2 t4
+Task t6 2 10 Kind1 t4
+Task t7 2 10 Kind2 t5,t6
+
+Job j3 -2 /root/group1/cara curve_gentle
+Task t8 1 10 Kind1 
+Task t9 4 10 Kind2 t8
+Task t10 4 10 Kind2 t8
+Task t11 4 10 Kind2 t8
+Task t12 2 10 Kind1 t9
+Task t13 2 10 Kind1 t10
+Task t14 2 10 Kind1 t11
+Task t15 8 10 Kind1 t12
+Task t16 8 10 Kind1 t13
+Task t17 8 10 Kind1 t14
+Task t18 1 10 Kind2 t15,t16,t17 
+

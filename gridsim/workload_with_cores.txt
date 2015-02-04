@@ -1,0 +1,24 @@
+
+Job 1 200
+Task 1 2 10 
+Task 2 2 15 1
+Task 3 2 20 2
+
+Job 2 210
+Task 4 1 11 
+Task 5 2 12 4
+Task 6 3 13 4
+Task 7 4 14 5,6
+
+Job 3 220
+Task 8 1 10 
+Task 9 1 10 8
+Task 10 1 10 8
+Task 11 1 10 8
+Task 12 1 10 9
+Task 13 1 10 10
+Task 14 1 10 11
+Task 15 1 10 12
+Task 16 1 10 13
+Task 17 1 10 14
+Task 18 10 10 15,16,17

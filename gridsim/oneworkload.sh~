@@ -1,0 +1,3 @@
+#generate_one_workload
+
+python workload_generator.py --numjobs 100 --totalexecsum 100000000 --minchains 2 --maxchains 20 --minchainlength 3 --maxchainlength 10 --minblocks 3 --maxblocks 10 --randomseed 123606 --outputfile ../grid_sim_run_files/Workload/chain_of_independent_chains_29.txt --depprob 1.0 --workloadstructure 2
